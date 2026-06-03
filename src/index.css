@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Rubik:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Rubik', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Custom Civic Horizon Color Palette */
+  --color-surface-dim: #d6d7ff;
+  --color-surface-bright: #fbf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f2ff;
+  --color-surface-container: #eeecff;
+  --color-surface-container-high: #e7e6ff;
+  --color-surface-container-highest: #e0e0ff;
+  --color-on-surface: #0b0f59;
+  --color-on-surface-variant: #46464f;
+  --color-inverse-surface: #23286e;
+  --color-inverse-on-surface: #f1efff;
+  --color-outline: #777680;
+  --color-outline-variant: #c7c5d0;
+  --color-surface-tint: #545a90;
+  --color-primary: #000116;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #10174a;
+  --color-on-primary-container: #7a81b9;
+  --color-inverse-primary: #bcc2ff;
+  --color-secondary: #b40063;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e2007d;
+  --color-on-secondary-container: #fffbff;
+  --color-tertiary: #000304;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #002126;
+  --color-on-tertiary-container: #0093a4;
+  --color-error: #DC2626;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-primary-fixed: #dfe0ff;
+  --color-primary-fixed-dim: #bcc2ff;
+  --color-on-primary-fixed: #0e1549;
+  --color-on-primary-fixed-variant: #3c4376;
+  --color-secondary-fixed: #ffd9e3;
+  --color-secondary-fixed-dim: #ffb0c9;
+  --color-on-secondary-fixed: #3e001e;
+  --color-on-secondary-fixed-variant: #8e004c;
+  --color-tertiary-fixed: #9cf0ff;
+  --color-tertiary-fixed-dim: #00daf3;
+  --color-on-tertiary-fixed: #001f24;
+  --color-on-tertiary-fixed-variant: #004f58;
+  --color-background: #fbf8ff;
+  --color-on-background: #0b0f59;
+  --color-surface-variant: #e0e0ff;
+  --color-surface-gray: #EFEFEF;
+  --color-success: #2D9D78;
+  --color-warning: #F59E0B;
+  --color-admin-bg: #F8FAFC;
+  
+  /* Custom Elevation level definitions */
+  --shadow-ambient-l1: 0px 4px 20px rgba(16, 23, 74, 0.05);
+  --shadow-ambient-l2: 0px 10px 30px rgba(16, 23, 74, 0.12);
+}
+
+/* Base custom classes to match responsive mockup grids */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+.shadow-ambient-l1 {
+  box-shadow: var(--shadow-ambient-l1);
+}
+
+.shadow-ambient-l2 {
+  box-shadow: var(--shadow-ambient-l2);
+}
+
+/* Highlight blinking red alerts gracefully */
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .9; transform: scale(1.005); }
+}
+
+html {
+  scroll-behavior: smooth;
+}

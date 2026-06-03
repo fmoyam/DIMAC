@@ -1,0 +1,6 @@
+{
+  "name": "DIMAC Maipú - Portal Integrado",
+  "description": "Integrated portal for citizens and officials of the Ilustre Municipalidad de Maipú. Centralizes news, digital procedures, appointments, workshops, support tickets, and analytics dashboards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
