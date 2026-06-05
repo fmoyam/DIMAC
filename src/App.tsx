@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { TopBar } from './components/TopBar';
 import { ClaveUnicaModal } from './components/ClaveUnicaModal';
@@ -29,6 +29,37 @@ function AppContent() {
   };
 
   const isAdmin = activeView === 'admin';
+
+  useEffect(() => {
+    let title = 'Portal DIMAC Maipú';
+    switch (activeView) {
+      case 'home':
+        title = 'Inicio | DIMAC Maipú';
+        break;
+      case 'admin':
+        title = 'Panel Administrativo | DIMAC Maipú';
+        break;
+      case 'citizen-tramites':
+        title = 'Mis Trámites | DIMAC Maipú';
+        break;
+      case 'citizen-boletin':
+        title = 'Boletín Informativo | DIMAC Maipú';
+        break;
+      case 'citizen-talleres':
+        title = 'Talleres CAM | DIMAC Maipú';
+        break;
+      case 'citizen-buzon':
+        title = 'Buzón Ciudadano | DIMAC Maipú';
+        break;
+      case 'citizen-perfil':
+        title = 'Mi Perfil | DIMAC Maipú';
+        break;
+      case 'citizen-noticias':
+        title = 'Noticias de tu Barrio | DIMAC Maipú';
+        break;
+    }
+    document.title = title;
+  }, [activeView]);
 
   return (
     <div className={`min-h-screen ${isAdmin ? 'bg-admin-bg' : 'bg-background'} text-on-background flex flex-col font-sans transition-colors duration-200`}>
