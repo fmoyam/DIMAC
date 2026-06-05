@@ -118,6 +118,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     document.body.removeChild(link);
   };
 
+  // --- Admin Funcionario Stats Mock ---
+  const mockFuncionariosStats = [
+    { id: 'f1', nombre: 'Camila Rojas', area: 'Social', cargo: 'Asistente Social', tramitesResueltos: 145, ticketsAtendidos: 58, hrsSemanales: 40, evaluacion: 4.8 },
+    { id: 'f2', nombre: 'Pedro Álvarez', area: 'Legal', cargo: 'Abogado', tramitesResueltos: 89, ticketsAtendidos: 22, hrsSemanales: 40, evaluacion: 4.5 },
+    { id: 'f3', nombre: 'Luisa Sánchez', area: 'Social', cargo: 'Trabajadora Social', tramitesResueltos: 210, ticketsAtendidos: 73, hrsSemanales: 40, evaluacion: 4.9 },
+    { id: 'f4', nombre: 'Fernando Miranda', area: 'Obras', cargo: 'Arquitecto', tramitesResueltos: 64, ticketsAtendidos: 19, hrsSemanales: 30, evaluacion: 4.7 },
+    { id: 'f5', nombre: 'Gabriela Silva', area: 'Salud', cargo: 'Enfermera', tramitesResueltos: 320, ticketsAtendidos: 104, hrsSemanales: 44, evaluacion: 4.9 },
+    { id: 'f6', nombre: 'Andrea Cáceres', area: 'Legal', cargo: 'Abogada Asesora', tramitesResueltos: 130, ticketsAtendidos: 45, hrsSemanales: 44, evaluacion: 4.6 }
+  ];
+
+  const handleExportExcelFuncionarios = () => {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "NOMBRE,AREA,CARGO,TRAMITES RESUELTOS,TICKETS ATENDIDOS,HORAS SEMANALES,EVALUACION\n";
+
+    mockFuncionariosStats.forEach(f => {
+      csvContent += `${f.nombre},${f.area},${f.cargo},${f.tramitesResueltos},${f.ticketsAtendidos},${f.hrsSemanales},${f.evaluacion}\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    // .xls extension is loosely supported by excel via csv format, or .csv if strictly pure data
+    link.setAttribute("download", `estadisticas_funcionarios_administracion.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // --- Availability Editor Logic ---
   const handleAddSlot = (e: React.FormEvent) => {
     e.preventDefault();
@@ -259,6 +287,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             <span className="material-symbols-outlined text-base normal-case">monitoring</span>
             <span>Estadísticas DIMAC</span>
           </button>
+
+          {usuarioActual?.rol === 'funcionario_admin' && (
+            <button
+              onClick={() => scrollToId('sec-funcionarios')}
+              className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-emerald-400 hover:text-emerald-300 hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-base normal-case">badge</span>
+              <span>Funcionarios (Admin)</span>
+            </button>
+          )}
 
           <button
             onClick={() => scrollToId('sec-expedientes')}
@@ -463,6 +501,95 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </div>
         </div>
       </div>
+
+      {/* SECTION ADMINISTRADOR: ESTADÍSTICAS DE FUNCIONARIOS */}
+      {usuarioActual?.rol === 'funcionario_admin' && (
+        <div id="sec-funcionarios" className="bg-white border border-secondary/20 rounded-3xl p-6 md:p-8 shadow-ambient-l1">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-5 mb-6">
+            <div>
+              <span className="text-secondary text-[10px] font-black uppercase tracking-wider">Módulo Analítico</span>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase mt-1">Rendimiento de Funcionarios</h2>
+              <p className="text-xs text-gray-500 mt-1">Métricas de trabajo y desempeño de los especialistas del CAM por área.</p>
+            </div>
+            <div>
+              <button
+                onClick={handleExportExcelFuncionarios}
+                className="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-lg px-4 py-1.5 text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">download</span>
+                <span>Exportar a Excel</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Funcionarios Activos</p>
+              <p className="text-3xl font-black text-slate-900">{mockFuncionariosStats.length}</p>
+            </div>
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Trámites Resueltos</p>
+              <p className="text-3xl font-black text-emerald-600">
+                {mockFuncionariosStats.reduce((acc, current) => acc + current.tramitesResueltos, 0)}
+              </p>
+            </div>
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Promedio Evaluación</p>
+              <div className="flex items-center gap-1">
+                <span className="material-symbols-outlined text-amber-400 text-lg">star</span>
+                <p className="text-3xl font-black text-slate-900">
+                  {(mockFuncionariosStats.reduce((acc, current) => acc + current.evaluacion, 0) / mockFuncionariosStats.length).toFixed(1)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Table of Funcionarios */}
+          <div className="overflow-x-auto border border-slate-200 rounded-xl">
+            <table className="w-full text-left font-sans text-xs">
+              <thead>
+                <tr className="bg-slate-100 border-b border-slate-200 text-gray-600 uppercase tracking-wider">
+                  <th className="py-3 px-4 font-black">Funcionario</th>
+                  <th className="py-3 px-4 font-black text-center">Área</th>
+                  <th className="py-3 px-4 font-black text-center">T. Resueltos</th>
+                  <th className="py-3 px-4 font-black text-center">Tickets</th>
+                  <th className="py-3 px-4 font-black text-center">Horas/Sem</th>
+                  <th className="py-3 px-4 font-black text-center">Nota</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockFuncionariosStats.map((func) => (
+                  <tr key={func.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-slate-900 text-sm">{func.nombre}</div>
+                      <div className="text-[10px] text-gray-500 font-medium">{func.cargo}</div>
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide
+                        ${func.area === 'Social' ? 'bg-sky-100 text-sky-800' :
+                          func.area === 'Legal' ? 'bg-indigo-100 text-indigo-800' :
+                          func.area === 'Salud' ? 'bg-rose-100 text-rose-800' : 
+                          'bg-amber-100 text-amber-800'}`}
+                      >
+                        {func.area}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-center font-bold text-slate-700">{func.tramitesResueltos}</td>
+                    <td className="py-3 px-4 text-center font-bold text-slate-700">{func.ticketsAtendidos}</td>
+                    <td className="py-3 px-4 text-center text-gray-600">{func.hrsSemanales} hrs</td>
+                    <td className="py-3 px-4 text-center">
+                      <div className="inline-flex items-center gap-1 bg-amber-50 text-amber-800 px-2 py-0.5 rounded-lg border border-amber-200 font-bold">
+                        <span className="material-symbols-outlined text-[12px]">star</span>
+                        {func.evaluacion}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* SECTION 2: GRID OF FOLDERS REVIEW & AVAILABILITY / ACTIONS */}
       <div id="sec-expedientes" className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

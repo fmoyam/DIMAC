@@ -42,6 +42,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
     setActiveView('admin');
   };
 
+  const handleAdminAccess = async () => {
+    // Log into Administrator role
+    await loginFuncionario('administrador@maipu.cl', 'funcionario_admin');
+    setActiveView('admin');
+  };
+
   const downloadFolleto = (fileName: string) => {
     // Emulated download file
     const element = document.createElement("a");
@@ -320,6 +326,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Admin Access Floor */}
+      <div className="border-t border-slate-200 mt-8 pt-8 flex justify-center pb-8">
+        <button
+          onClick={handleAdminAccess}
+          className="flex items-center justify-center gap-2 bg-transparent text-slate-500 border border-slate-300 rounded-xl px-5 py-3 text-xs font-bold hover:bg-slate-100 transition-all cursor-pointer shadow-ambient-l1"
+        >
+          <span className="material-symbols-outlined text-base">admin_panel_settings</span>
+          <span>Acceso de Administrador</span>
+        </button>
+      </div>
     </div>
   );
 };
