@@ -50,6 +50,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [integrityErrorList, setIntegrityErrorList] = useState<string[] | null>(null);
 
   // --- News Publisher States ---
+  const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
   const [newsTitle, setNewsTitle] = useState('');
   const [newsCategory, setNewsCategory] = useState<Noticia['categoria']>('Operativo');
   const [newsBody, setNewsBody] = useState('');
@@ -57,6 +58,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [newsExpiration, setNewsExpiration] = useState('');
   const [newsBrochureName, setNewsBrochureName] = useState('');
   const [notifySubscribers, setNotifySubscribers] = useState(false);
+  const [newsToDelete, setNewsToDelete] = useState<{ id: string; titulo: string } | null>(null);
 
   // --- Tickets support states ---
   const [replyTicketTarget, setReplyTicketTarget] = useState<TicketConsulta | null>(null);
@@ -207,22 +209,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       isInitiallyVisible = false;
     }
 
-    addNoticia({
-      titulo: newsTitle,
-      cuerpo: newsBody,
-      categoria: newsCategory,
-      fecha: simulationTime.toISOString().split('T')[0],
-      visible: isInitiallyVisible,
-      fechaPublicacion: scheduledDate,
-      fechaExpiracion: expirationDate,
-      archivoFolleto: attachment
-    });
-
-    if (notifySubscribers) {
-      // HU-10-2 simulate proactive SMTP email notifications logs
-      alert(`¡Publicación completada! Se han despachado ${Math.floor(450 + Math.random() * 200)} boletines por mail debido al aviso selectivo.`);
+    if (editingNewsId) {
+      updateNoticia(editingNewsId, {
+        titulo: newsTitle,
+        cuerpo: newsBody,
+        categoria: newsCategory,
+        // Mantener la fecha original si no programamos una nueva
+        fechaPublicacion: scheduledDate,
+        fechaExpiracion: expirationDate,
+        archivoFolleto: attachment
+      }, notifySubscribers);
+      setEditingNewsId(null);
     } else {
-      alert('Noticia guardada de forma exitosa.');
+      addNoticia({
+        titulo: newsTitle,
+        cuerpo: newsBody,
+        categoria: newsCategory,
+        fecha: simulationTime.toISOString().split('T')[0],
+        visible: isInitiallyVisible,
+        fechaPublicacion: scheduledDate,
+        fechaExpiracion: expirationDate,
+        archivoFolleto: attachment
+      });
+
+      if (notifySubscribers) {
+        // HU-10-2 simulate proactive SMTP email notifications logs
+        alert(`¡Publicación completada! Se han despachado ${Math.floor(450 + Math.random() * 200)} boletines por mail debido al aviso selectivo.`);
+      } else {
+        alert('Noticia guardada de forma exitosa.');
+      }
     }
 
     // Reset Form
@@ -232,6 +247,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     setNewsSchedulePublish('');
     setNewsExpiration('');
     setNotifySubscribers(false);
+  };
+
+  const handleEditNews = (n: Noticia) => {
+    setEditingNewsId(n.id);
+    setNewsTitle(n.titulo);
+    setNewsCategory(n.categoria);
+    setNewsBody(n.cuerpo);
+    setNewsSchedulePublish(n.fechaPublicacion || '');
+    setNewsExpiration(n.fechaExpiracion || '');
+    setNewsBrochureName(n.archivoFolleto || '');
+    setNotifySubscribers(false);
+    
+    // Auto-scroll to form
+    const formElement = document.getElementById('sec-boletin');
+    if (formElement) formElement.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleCancelEditNews = () => {
+    setEditingNewsId(null);
+    setNewsTitle('');
+    setNewsBody('');
+    setNewsBrochureName('');
+    setNewsSchedulePublish('');
+    setNewsExpiration('');
+    setNotifySubscribers(false);
+  };
+
+  const handleDeleteNews = (id: string, titulo: string) => {
+    setNewsToDelete({ id, titulo });
   };
 
   // --- Reply Citizen message ---
@@ -824,15 +868,63 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
               </label>
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end gap-3 pt-2">
+              {editingNewsId && (
+                <button
+                  type="button"
+                  onClick={handleCancelEditNews}
+                  className="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 duration-150 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer"
+                >
+                  Cancelar Edición
+                </button>
+              )}
               <button
                 type="submit"
                 className="px-6 py-2.5 bg-secondary hover:bg-secondary-container duration-150 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-ambient-l1 cursor-pointer"
               >
-                Publicar Noticia en Panel Público
+                {editingNewsId ? 'Guardar Cambios' : 'Publicar Noticia en Panel Público'}
               </button>
             </div>
           </form>
+
+          {/* List of existing news / boletines */}
+          <div className="mt-10 border-t border-slate-100 pt-6">
+            <h4 className="text-sm font-bold text-slate-800 tracking-tight uppercase mb-4">Boletines Publicados</h4>
+            {noticias.length === 0 ? (
+              <p className="text-xs text-slate-500">No hay boletines publicados.</p>
+            ) : (
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                {noticias.map((n) => (
+                  <div key={n.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-slate-200 rounded-xl bg-slate-50">
+                    <div className="flex-1 mb-3 sm:mb-0 pr-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-bold py-0.5 px-2 bg-slate-200 text-slate-700 rounded-md uppercase tracking-wider">{n.categoria}</span>
+                        {!n.visible && <span className="text-[10px] font-bold py-0.5 px-2 bg-amber-100 text-amber-700 rounded-md uppercase tracking-wider">Oculta (Borrador / Futuro)</span>}
+                      </div>
+                      <h5 className="text-sm font-bold text-slate-900 leading-tight">{n.titulo}</h5>
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-1">{n.cuerpo}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleEditNews(n)}
+                        className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors cursor-pointer"
+                        title="Editar"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteNews(n.id, n.titulo)}
+                        className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                        title="Eliminar"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Tickets Box replies matches Mockup 2 format (col-span-4) */}
@@ -1108,6 +1200,38 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* MODAL III: CONFIRM DELETE NEWS */}
+      {newsToDelete && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[110] p-4 text-left">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl overflow-hidden border border-gray-100 flex flex-col items-center text-center">
+            <span className="material-symbols-outlined text-4xl text-error mb-4">warning</span>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Eliminar Boletín</h3>
+            <p className="text-sm text-slate-600 mb-6">
+              ¿Estás seguro de que deseas eliminar el boletín <br/>
+              <span className="font-bold text-slate-900">"{newsToDelete.titulo}"</span>?
+            </p>
+            <div className="flex gap-3 w-full">
+              <button
+                type="button"
+                onClick={() => setNewsToDelete(null)}
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteNoticia(newsToDelete.id);
+                  setNewsToDelete(null);
+                }}
+                className="flex-1 py-2.5 bg-error hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+              >
+                Eliminar
+              </button>
+            </div>
           </div>
         </div>
       )}
