@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { TopBar } from './components/TopBar';
 import { ClaveUnicaModal } from './components/ClaveUnicaModal';
+import { AccessibilityWidget } from './components/AccessibilityWidget';
 import { HomeView } from './views/HomeView';
 import { CitizenDashboard } from './views/CitizenDashboard';
 import { AdminDashboard } from './views/AdminDashboard';
@@ -109,6 +110,9 @@ function AppContent() {
           setActiveView('citizen-tramites');
         }}
       />
+
+      {/* Interactive Accessibility floating bar widget */}
+      <AccessibilityWidget />
     </div>
   );
 }

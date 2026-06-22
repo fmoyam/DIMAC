@@ -93,3 +93,61 @@ h1, h2, h3, h4, h5, h6 {
 html {
   scroll-behavior: smooth;
 }
+
+/* ==========================================================================
+   Accessibility Helper Styles
+   ========================================================================== */
+
+/* High Contrast mode */
+.accessibility-high-contrast {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.accessibility-high-contrast * {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Distinguish interactive elements (links, buttons, inputs) in High Contrast with vivid color */
+.accessibility-high-contrast a,
+.accessibility-high-contrast button,
+.accessibility-high-contrast input,
+.accessibility-high-contrast select,
+.accessibility-high-contrast textarea,
+.accessibility-high-contrast [role="button"] {
+  background-color: #000000 !important;
+  color: #ffff00 !important; /* Yellow text for focus/interactivity */
+  border: 2px solid #ffffff !important;
+  text-decoration: underline !important;
+  outline: 2px dashed #ffff00 !important;
+}
+
+.accessibility-high-contrast a:hover,
+.accessibility-high-contrast button:hover,
+.accessibility-high-contrast [role="button"]:hover {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  text-decoration: underline !important;
+}
+
+/* Dyslexia reading friendliness */
+.accessibility-dyslexia,
+.accessibility-dyslexia * {
+  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive, sans-serif !important;
+  letter-spacing: 0.15em !important;
+  word-spacing: 0.18em !important;
+  line-height: 1.8 !important;
+}
+
+/* Underline all links specifically */
+.accessibility-underline a,
+.accessibility-underline [role="link"] {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 4px !important;
+}
+
