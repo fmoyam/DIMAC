@@ -36,15 +36,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
     return true;
   });
 
-  const handleOfficialAccess = async () => {
-    // Automatically log into Social Assistant as a default official access helper
-    await loginFuncionario('social@maipu.cl', 'funcionario_social');
-    setActiveView('admin');
-  };
-
   const handleAdminAccess = async () => {
     // Log into Administrator role
     await loginFuncionario('administrador@maipu.cl', 'funcionario_admin');
+    setActiveView('admin');
+  };
+
+  const handleOfficialAccess = async () => {
+    // Automatically log into Social Assistant as a default official access helper
+    await loginFuncionario('social@maipu.cl', 'funcionario_social');
     setActiveView('admin');
   };
 

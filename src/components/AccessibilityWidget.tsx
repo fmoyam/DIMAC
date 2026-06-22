@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Accessibility, X, Contrast, Type, Volume2, CaseSensitive, Link as LinkIcon, RotateCcw } from 'lucide-react';
+import { X, Contrast, Type, Volume2, CaseSensitive, Link as LinkIcon, RotateCcw } from 'lucide-react';
 
 export function AccessibilityWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -212,7 +212,9 @@ export function AccessibilityWidget() {
           <div className="bg-white border border-slate-200 text-slate-900 rounded-2xl shadow-ambient-l2 w-80 p-5 mb-3 animate-fade-in-up flex flex-col gap-4 text-left border-t-4 border-t-[#0b0f59]">
             <div className="flex items-center justify-between border-b pb-3 border-slate-150">
               <div className="flex items-center gap-2.5">
-                <Accessibility className="text-[#0b0f59] w-6 h-6 stroke-[2.2]" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="text-[#0b0f59] w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 2c.83 0 1.5.67 1.5 1.5S12.83 9 12 9s-1.5-.67-1.5-1.5S11.17 6 12 6zm4 4.5v1.5h-2.5v5.5h-1.5v-3h-1v3H9.5v-5.5H7v-1.5h9z" />
+                </svg>
                 <span className="text-sm font-black uppercase text-slate-900 tracking-tight">Opciones de Accesibilidad</span>
               </div>
               <button
@@ -389,7 +391,9 @@ export function AccessibilityWidget() {
           {isOpen ? (
             <X className="w-6 h-6 text-white text-3xl font-bold" />
           ) : (
-            <Accessibility className="w-7 h-7 text-white text-3xl font-bold animate-pulse" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white animate-pulse" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm0 2c.83 0 1.5.67 1.5 1.5S12.83 9 12 9s-1.5-.67-1.5-1.5S11.17 6 12 6zm4 4.5v1.5h-2.5v5.5h-1.5v-3h-1v3H9.5v-5.5H7v-1.5h9z" />
+            </svg>
           )}
         </button>
 

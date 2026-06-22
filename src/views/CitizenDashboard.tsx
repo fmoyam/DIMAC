@@ -40,6 +40,8 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
     uploadDocumentSimulate,
   } = useApp();
 
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
+
   // --- Dynamic Geolocalization & News States ---
   const [selectedNews, setSelectedNews] = useState<Noticia | null>(null);
   const [simulatedAddress, setSimulatedAddress] = useState(usuarioActual?.direccion || 'Av. Esquina Blanca 501, Maipú, Chile');
@@ -294,20 +296,31 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       {/* Side Menu Navigation matching Mockups layout style */}
       <aside className="col-span-12 lg:col-span-3 flex flex-col bg-[#0b0f59] text-white p-6 rounded-2xl shadow-lg border border-slate-700/30 h-max lg:sticky lg:top-24">
-        <div className="flex items-center gap-4 mb-6 border-b border-white/10 pb-5">
-          <div className="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center font-black text-sm border-2 border-white/20 shadow-md uppercase">
-            {usuarioActual.nombreCompleto.substring(0, 2).toUpperCase()}
+        <div className="flex justify-between items-start mb-6 border-b border-white/10 pb-5">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center font-black text-sm border-2 border-white/20 shadow-md uppercase">
+              {usuarioActual.nombreCompleto.substring(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <h3 className="font-bold text-sm tracking-tight truncate max-w-[150px]">{usuarioActual.nombreCompleto}</h3>
+              <p className="text-[10px] text-gray-300 font-mono mt-0.5">{usuarioActual.rut}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-bold text-sm tracking-tight truncate max-w-[150px]">{usuarioActual.nombreCompleto}</h3>
-            <p className="text-[10px] text-gray-300 font-mono mt-0.5">{usuarioActual.rut}</p>
-          </div>
+          <button
+            title="Desplegar Menú"
+            onClick={() => setIsNavExpanded(!isNavExpanded)}
+            className="lg:hidden p-2 bg-white/10 rounded-lg text-white hover:bg-white/20 transition-all cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-xl leading-none">
+              {isNavExpanded ? 'expand_less' : 'menu'}
+            </span>
+          </button>
         </div>
 
-        <nav className="flex flex-col gap-1.5 flex-grow">
+        <nav className={`flex-col gap-1.5 flex-grow ${isNavExpanded ? 'flex' : 'hidden lg:flex'}`}>
           {/* Active Navigation states have surface-container backgrounds and left borders */}
           <button
-            onClick={() => setSubView('tramites')}
+            onClick={() => { setSubView('tramites'); setIsNavExpanded(false); }}
             className={`w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left ${
               subView === 'tramites'
                 ? 'bg-surface-container text-on-surface border-l-4 border-secondary pl-3'
@@ -319,7 +332,7 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
           </button>
 
           <button
-            onClick={() => setSubView('citas')}
+            onClick={() => { setSubView('citas'); setIsNavExpanded(false); }}
             className={`w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left ${
               subView === 'citas'
                 ? 'bg-surface-container text-on-surface border-l-4 border-secondary pl-3'
@@ -331,7 +344,7 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
           </button>
 
           <button
-            onClick={() => setSubView('talleres')}
+            onClick={() => { setSubView('talleres'); setIsNavExpanded(false); }}
             className={`w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left ${
               subView === 'talleres'
                 ? 'bg-surface-container text-on-surface border-l-4 border-secondary pl-3'
@@ -343,7 +356,7 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
           </button>
 
           <button
-            onClick={() => setSubView('buzon')}
+            onClick={() => { setSubView('buzon'); setIsNavExpanded(false); }}
             className={`w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left ${
               subView === 'buzon'
                 ? 'bg-surface-container text-on-surface border-l-4 border-secondary pl-3'
@@ -355,7 +368,7 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
           </button>
 
           <button
-            onClick={() => setSubView('perfil')}
+            onClick={() => { setSubView('perfil'); setIsNavExpanded(false); }}
             className={`w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left ${
               subView === 'perfil'
                 ? 'bg-surface-container text-on-surface border-l-4 border-secondary pl-3'
@@ -369,7 +382,7 @@ export const CitizenDashboard: React.FC<CitizenDashboardProps> = ({
           <div className="my-2 border-t border-white/10"></div>
 
           <button
-            onClick={() => setSubView('noticias')}
+            onClick={() => { setSubView('noticias'); setIsNavExpanded(false); }}
             className={`w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left ${
               subView === 'noticias'
                 ? 'bg-surface-container text-on-surface border-l-4 border-secondary pl-3'

@@ -30,6 +30,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     triggerConcurrenciaSimulation
   } = useApp();
 
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
+
   // --- Analytical stats states (HU-09) ---
   const [selectedAreaFilter, setSelectedAreaFilter] = useState<'All' | 'Social' | 'Legal'>('All');
 
@@ -261,27 +263,38 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       {/* Side Menu Navigation matching Citizen Dashboard style */}
       <aside className="col-span-12 lg:col-span-3 flex flex-col bg-[#0b0f59] text-white p-6 rounded-2xl shadow-lg border border-slate-700/30 h-max lg:sticky lg:top-24">
-        <div className="flex items-center gap-4 mb-6 border-b border-white/10 pb-5">
-          <div className="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center font-black text-sm border-2 border-white/20 shadow-md uppercase">
-            {usuarioActual ? usuarioActual.nombreCompleto.substring(0, 2).toUpperCase() : 'FC'}
+        <div className="flex justify-between items-start mb-6 border-b border-white/10 pb-5">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center font-black text-sm border-2 border-white/20 shadow-md uppercase">
+              {usuarioActual ? usuarioActual.nombreCompleto.substring(0, 2).toUpperCase() : 'FC'}
+            </div>
+            <div>
+              <h3 className="font-bold text-sm tracking-tight truncate max-w-[150px]">
+                {usuarioActual ? usuarioActual.nombreCompleto : 'Funcionario'}
+              </h3>
+              <p className="text-[10px] text-gray-300 font-mono mt-0.5 uppercase mb-1">
+                {usuarioActual?.rol === 'funcionario_social' ? 'ASISTENTE SOCIAL' : 'ADMINISTRADOR'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-bold text-sm tracking-tight truncate max-w-[150px]">
-              {usuarioActual ? usuarioActual.nombreCompleto : 'Funcionario'}
-            </h3>
-            <p className="text-[10px] text-gray-300 font-mono mt-0.5 uppercase mb-1">
-              {usuarioActual?.rol === 'funcionario_social' ? 'ASISTENTE SOCIAL' : 'ADMINISTRADOR'}
-            </p>
-          </div>
+          <button
+            title="Desplegar Menú"
+            onClick={() => setIsNavExpanded(!isNavExpanded)}
+            className="lg:hidden p-2 bg-white/10 rounded-lg text-white hover:bg-white/20 transition-all cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-xl leading-none">
+              {isNavExpanded ? 'expand_less' : 'menu'}
+            </span>
+          </button>
         </div>
 
-        <nav className="flex flex-col gap-1.5 flex-grow">
+        <nav className={`flex-col gap-1.5 flex-grow ${isNavExpanded ? 'flex' : 'hidden lg:flex'}`}>
           <div className="px-4 py-2 text-[10px] uppercase font-bold text-gray-400 tracking-wider">
             Consola Municipal
           </div>
 
           <button
-            onClick={() => scrollToId('sec-reportes')}
+            onClick={() => { scrollToId('sec-reportes'); setIsNavExpanded(false); }}
             className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-gray-300 hover:text-white hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
           >
             <span className="material-symbols-outlined text-base normal-case">monitoring</span>
@@ -290,7 +303,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
           {usuarioActual?.rol === 'funcionario_admin' && (
             <button
-              onClick={() => scrollToId('sec-funcionarios')}
+              onClick={() => { scrollToId('sec-funcionarios'); setIsNavExpanded(false); }}
               className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-emerald-400 hover:text-emerald-300 hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
             >
               <span className="material-symbols-outlined text-base normal-case">badge</span>
@@ -299,7 +312,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           )}
 
           <button
-            onClick={() => scrollToId('sec-expedientes')}
+            onClick={() => { scrollToId('sec-expedientes'); setIsNavExpanded(false); }}
             className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-gray-300 hover:text-white hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
           >
             <span className="material-symbols-outlined text-base normal-case">folder_shared</span>
@@ -307,7 +320,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </button>
 
           <button
-            onClick={() => scrollToId('sec-disponibilidad')}
+            onClick={() => { scrollToId('sec-disponibilidad'); setIsNavExpanded(false); }}
             className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-gray-300 hover:text-white hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
           >
             <span className="material-symbols-outlined text-base normal-case">edit_calendar</span>
@@ -315,7 +328,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </button>
 
           <button
-            onClick={() => scrollToId('sec-boletin')}
+            onClick={() => { scrollToId('sec-boletin'); setIsNavExpanded(false); }}
             className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-gray-300 hover:text-white hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
           >
             <span className="material-symbols-outlined text-base normal-case">newspaper</span>
@@ -323,7 +336,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </button>
 
           <button
-            onClick={() => scrollToId('sec-buzon')}
+            onClick={() => { scrollToId('sec-buzon'); setIsNavExpanded(false); }}
             className="w-full flex items-center gap-3 py-3 rounded-r-lg text-xs font-bold tracking-wide uppercase transition-all text-left text-gray-300 hover:text-white hover:bg-white/5 border-l-4 border-transparent pl-4 cursor-pointer"
           >
             <span className="material-symbols-outlined text-base normal-case">chat</span>

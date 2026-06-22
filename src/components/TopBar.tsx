@@ -19,21 +19,6 @@ export const TopBar: React.FC<TopBarProps> = ({
 }) => {
   const { usuarioActual, loginFuncionario, logout, notifications, clearNotifications } = useApp();
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
-  const [showRoleSelector, setShowRoleSelector] = useState(false);
-
-  // Switch to preset social worker
-  const handleSelectSocialWorker = async () => {
-    await loginFuncionario('social@maipu.cl', 'funcionario_social');
-    setActiveView('admin');
-    setShowRoleSelector(false);
-  };
-
-  // Switch to preset administrator
-  const handleSelectAdmin = async () => {
-    await loginFuncionario('admin@maipu.cl', 'funcionario_admin');
-    setActiveView('admin');
-    setShowRoleSelector(false);
-  };
 
   const getUserInitials = () => {
     if (!usuarioActual) return 'GU';
@@ -48,19 +33,19 @@ export const TopBar: React.FC<TopBarProps> = ({
   return (
     <header className="fixed top-0 w-full z-[80] bg-primary text-white border-b border-primary-container shadow-ambient-l1 flex justify-between items-center px-4 md:px-gutter h-16">
       {/* Brand & Desktop Logo */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 shrink-0">
         <div 
           onClick={() => setActiveView('home')} 
-          className="cursor-pointer group flex items-center gap-2"
+          className="cursor-pointer group flex items-center gap-2.5"
         >
-          <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center font-bold text-base shadow-sm ring-1 ring-white/10 group-hover:scale-105 duration-200">
+          <div className="shrink-0 w-9 h-9 rounded-lg bg-secondary flex items-center justify-center font-bold text-base shadow-sm ring-1 ring-white/10 group-hover:scale-105 duration-200">
             D
           </div>
-          <div>
-            <h1 className="font-sans text-base font-bold tracking-tight text-white group-hover:text-secondary-fixed-dim transition-colors">
+          <div className="flex flex-col justify-center max-w-[120px] md:max-w-none">
+            <h1 className="font-sans text-sm md:text-base font-bold tracking-tight text-white group-hover:text-secondary-fixed-dim transition-colors truncate whitespace-nowrap">
               DIMAC Maipú
             </h1>
-            <p className="text-[9px] text-gray-400 font-mono tracking-wider -mt-1 uppercase">Portal Integrado</p>
+            <p className="text-[9px] md:text-[10px] text-gray-400 font-mono tracking-wider -mt-0.5 uppercase truncate whitespace-nowrap">Portal Integrado</p>
           </div>
         </div>
       </div>
@@ -81,89 +66,10 @@ export const TopBar: React.FC<TopBarProps> = ({
 
       {/* Action panel & dropdowns */}
       <div className="flex items-center gap-2 md:gap-4">
-        {/* Hub Panel Toggle */}
-        <div className="relative">
-          <button
-            onClick={() => setShowRoleSelector(!showRoleSelector)}
-            className="flex items-center gap-1 bg-primary-container hover:bg-primary-container/85 border border-white/10 rounded-lg px-2.5 py-1.5 transition-all text-xs font-semibold text-white md:-translate-y-px shadow-ambient-l1 active:scale-95 cursor-pointer"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
-            <span>Simulador de Roles</span>
-            <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {showRoleSelector && (
-            <div className="absolute right-0 mt-2 w-72 bg-[#10174a] border border-white/10 rounded-lg shadow-ambient-l2 z-[90] p-4 text-[#ffffff] animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="border-b border-white/10 pb-2 mb-3">
-                <p className="text-xs font-bold uppercase tracking-wider text-secondary-fixed">Panel de Control de Roles</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">Establece roles para previsualizar flujos</p>
-              </div>
-              <div className="space-y-2 text-left">
-                {/* Citizen Flow trigger */}
-                <button
-                  onClick={() => {
-                    onOpenClaveUnica();
-                    setShowRoleSelector(false);
-                  }}
-                  className="w-full flex items-center justify-between p-2.5 hover:bg-white/5 rounded-lg border border-white/5 transition-colors text-xs text-left cursor-pointer"
-                >
-                  <div>
-                    <p className="font-bold text-gray-200">Ruta 1: Perfil Ciudadano</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">Mis Trámites, Citas, Talleres, Buzón de Consultas</p>
-                  </div>
-                  <span className="material-symbols-outlined text-xs text-secondary-fixed">arrow_forward</span>
-                </button>
-
-                {/* Social Assistant Flow trigger */}
-                <button
-                  onClick={handleSelectSocialWorker}
-                  className="w-full flex items-center justify-between p-2.5 hover:bg-white/5 rounded-lg border border-white/5 transition-colors text-xs text-left cursor-pointer"
-                >
-                  <div>
-                    <p className="font-bold text-gray-200">Ruta 2: Asistente Social (CAM)</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">Revisión de documentos, control de expedientes, disponibilidad</p>
-                  </div>
-                  <span className="material-symbols-outlined text-xs text-tertiary-fixed-dim">arrow_forward</span>
-                </button>
-
-                {/* Admin Flow trigger */}
-                <button
-                  onClick={handleSelectAdmin}
-                  className="w-full flex items-center justify-between p-2.5 hover:bg-white/5 rounded-lg border border-white/5 transition-colors text-xs text-left cursor-pointer"
-                >
-                  <div>
-                    <p className="font-bold text-gray-200">Ruta 3: Administrador General</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">Estadísticas, Operativos de Salud, Notificaciones SMTP</p>
-                  </div>
-                  <span className="material-symbols-outlined text-xs text-emerald-400">arrow_forward</span>
-                </button>
-
-                {usuarioActual && (
-                  <button
-                    onClick={() => {
-                      logout();
-                      setActiveView('home');
-                      setShowRoleSelector(false);
-                    }}
-                    className="w-full py-2 bg-error/20 hover:bg-error/35 border border-error/30 rounded-lg text-xs font-bold text-red-200 transition-colors cursor-pointer"
-                  >
-                    Cerrar Sesión Actual
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Notifications list drawer */}
         <div className="relative">
           <button
-            onClick={() => {
-              setShowNotifDropdown(!showNotifDropdown);
-              setShowRoleSelector(false);
-            }}
+            onClick={() => setShowNotifDropdown(!showNotifDropdown)}
             className="p-2 rounded-full hover:bg-white/5 text-gray-300 hover:text-white transition-colors relative active:scale-95 cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
